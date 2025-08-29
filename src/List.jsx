@@ -2,11 +2,11 @@ import { useState } from "react";
 import { format, startOfWeek, addDays, isSameDay, getTime } from "date-fns";
 
 let initialArtist = [
-        {id:0, name: 'My phone', describe: 'I want to repair my phone next week', status: "all" | "in-progress" | "completed", time: new Date().toLocaleTimeString()},
-        {id:1, name: 'My phone', describe: 'i dont have money', status: "all" | "in-progress" | "completed", time: new Date().toLocaleTimeString()},
-        {id:2, name: 'My phone', describe: 'i dont have money', status: "all" | "in-progress" | "completed", time: new Date().toLocaleTimeString()},
-        {id:3, name: 'My phone', describe: 'i dont have money', status: "all" | "in-progress" | "completed", time: new Date().toLocaleTimeString()},
-        {id:4, name: 'My phone', describe: 'i dont have money', status: "all" | "in-progress" | "completed", time: new Date().toLocaleTimeString()},
+        {id:0, name: 'My phone', describe: 'I want to repair my phone next week', status: "pending" | "in-progress" | "completed", time: new Date().toLocaleTimeString()},
+        {id:1, name: 'My phone', describe: 'i dont have money', status: "pending" | "in-progress" | "completed", time: new Date().toLocaleTimeString()},
+        {id:2, name: 'My phone', describe: 'i dont have money', status: "pending" | "in-progress" | "completed", time: new Date().toLocaleTimeString()},
+        {id:3, name: 'My phone', describe: 'i dont have money', status: "pending" | "in-progress" | "completed", time: new Date().toLocaleTimeString()},
+        {id:4, name: 'My phone', describe: 'i dont have money', status: "pending" | "in-progress" | "completed", time: new Date().toLocaleTimeString()},
         
     ]
 
@@ -49,7 +49,7 @@ export default function Todo ({artist}) {
     }
 
     const addTask = () => {
-       setArtists([...artists, {name:name, describe: describe, status: "all", time: new Date().toLocaleTimeString()}]);
+       setArtists([...artists, {name:name, describe: describe, status: "pending", time: new Date().toLocaleTimeString()}]);
        setName("");
        setDescribe("");
        setAdd(false)
@@ -93,7 +93,7 @@ export default function Todo ({artist}) {
     };
          
     const renderList = (status) => (
-      artists.filter(artist => status === "all" ? true : artist.status === status)
+      artists.filter(artist => status === "pending" ? true : artist.status === status)
       .map(artist => (
             <div key={artist.id} className="mb-5 w-full md:w-xl rounded-xl text-start bg-gradient-to-r from-slate-900 via-violet-900 to-indigo-800">
               {editingTodoId === artist.id ? (
@@ -129,11 +129,12 @@ export default function Todo ({artist}) {
               {open === artist.id &&(
                 <div className="flex py-3 px-3 gap-3">
                 <p className="text-indigo-200 text-sm grow-1">{artist.describe}</p>
-                  <select className= "focus:outline-0 px-2 py-2 rounded-xl bg-indigo-950 text-indigo-200 hover:bg-violet-950" value={artist.status} onChange={(e) => updateStatus(artist.id, e.target.value)}>
-                    <option value="all">All List</option>
-                    <option onClick={() => setSelect(true)} value="in-progress">In-progress</option>
-                    <option value="completed">Completed</option>
-                  </select>
+                  {all && 
+                  <button onClick={() => updateStatus(artist.id, "in-progress")} value={artist.status} className="bg-indigo-950 py-2 rounded-xl px-3 text-indigo-100 hover:bg-indigo-900">in-progress</button>
+                  }
+                  {inProgress && 
+                  <button onClick={() => updateStatus(artist.id, "completed")} value={artist.status} className="bg-indigo-950 py-2 rounded-xl px-3 text-indigo-100 hover:bg-indigo-900">Completed</button>
+                  }
                 <button onClick={() => removeList(artist.id)}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e0e7ff" class="bi bi-trash" viewBox="0 0 16 16">
               <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
               <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
@@ -200,14 +201,14 @@ export default function Todo ({artist}) {
           
         <div className="bg-indigo-200 rounded-t-[8vw] mt-20 pt-15 px-5 md:px-10 h-full">
           <div className="flex gap-4 pb-5">
-            <button onClick={handleAll} className={ all === true ? "border-b-3 rounded-lg py-1  px-1 border-indigo-950 cursor-pointer font-bold text-xl sm:text-2xl text-indigo-950" : "border-b-none cursor-pointer font-bold text-xl sm:text-2xl text-indigo-950"}>All Task</button>
+            <button onClick={handleAll} className={ all === true ? "border-b-3 rounded-lg py-1  px-1 border-indigo-950 cursor-pointer font-bold text-xl sm:text-2xl text-indigo-950" : "border-b-none cursor-pointer font-bold text-xl sm:text-2xl text-indigo-950"}>Pending</button>
             <button onClick={handleProgress} className={ inProgress === true ? "border-b-3 py-1 rounded-lg px-1 border-indigo-950 cursor-pointer font-bold text-xl sm:text-2xl text-indigo-950" : "border-b-none cursor-pointer font-bold text-xl sm:text-2xl text-indigo-950"}>In-Progress</button> 
             <button onClick={handleComplete} className={ completed === true ? "border-b-3 py-1 rounded-lg px-1 border-indigo-950 cursor-pointer font-bold text-xl sm:text-2xl text-indigo-950" : "border-b-none cursor-pointer font-bold text-xl sm:text-2xl text-indigo-950"}>Completed</button>
           </div>
           <div>
            {all &&
             <div className="mt-10">
-              {renderList("all")}
+              {renderList("pending")}
             </div>
             } 
             <div className="pt-10 pb-5">
